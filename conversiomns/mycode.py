@@ -5,23 +5,24 @@ import matplotlib.pyplot as plt
 import soundfile as sf
 
 text = input("enter the text:")
-slices = list(text)
+#slices = list(text)
 
-print(slices)
+#print(slices)
 
-A = []
-for num in slices:
+#A = []
+for num in text:
     av = ord(num)
-    A.append(av)
+    #A.append(av)
+    print(av)
    
-print(A)
+#print(A)
 # input numerical data
 
 # apply Fourier transform to get frequency spectrum
-freq_spectrum = np.fft.fft(A)
+freq_spectrum = np.fft.fft(av)
 
 # get the corresponding frequencies
-freq = np.fft.fftfreq(len(A))
+freq = np.fft.fftfreq(len(av))
 print(freq)
 
 # get the corresponding frequencies in Hz
