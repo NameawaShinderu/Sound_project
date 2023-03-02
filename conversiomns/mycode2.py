@@ -41,12 +41,12 @@ char_freq = {
 }
 
 # Convert the text into a sequence of frequencies
-for c in text:
-    print(char_freq[c])
+# for c in text:
+#     print(char_freq[c])
 
-    
-# freq_seq = [char_freq[char] for char in text]
-# print(freq_seq)
+
+freq_seq = [char_freq[char] for char in text]
+print(freq_seq)
 
 # # Generate the sound wave by concatenating sine waves of the specified frequencies
 # t = np.linspace(0, duration, fs * duration, False)
