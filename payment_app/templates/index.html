@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Audio Communication Demo</title>
+  </head>
+  <body>
+    <h1>Audio Communication Demo</h1>
+    <p>
+      Press the button below to start recording a message. The message will be converted to sound and played back to you.
+    </p>
+    <form method="POST" action="/">
+      {{ form.csrf_token }}
+      {{ form.record(class="btn btn-primary") }}
+    </form>
+    {% if url_for('playback') %}
+      <audio controls>
+        <source src="{{ url_for('playback') }}" type="audio/wav">
+      </audio>
+    {% endif %}
+  </body>
+</html>
