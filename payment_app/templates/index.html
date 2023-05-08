@@ -1,21 +1,29 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <title>Audio Communication Demo</title>
+    <title>Beat-Pe</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
   </head>
   <body>
-    <h1>Audio Communication Demo</h1>
-    <p>
-      Press the button below to start recording a message. The message will be converted to sound and played back to you.
-    </p>
-    <form method="POST" action="/">
-      {{ form.csrf_token }}
-      {{ form.record(class="btn btn-primary") }}
-    </form>
-    {% if url_for('playback') %}
-      <audio controls>
-        <source src="{{ url_for('playback') }}" type="audio/wav">
-      </audio>
-    {% endif %}
+    <div class="container">
+      <h1 class="text-center my-5">Beat-Pe</h1>
+      <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group row">
+          <div class="col-md-4"></div>
+          <div class="col-md-4">
+            <button type="submit" class="btn btn-primary btn-lg btn-block">{{ form.record.label }}</button>
+          </div>
+          <div class="col-md-4"></div>
+        </div>
+      </form>
+      <div class="text-center my-5">
+        <h2>Current Balance: {{ balance }}</h2>
+      </div>
+    </div>
   </body>
 </html>

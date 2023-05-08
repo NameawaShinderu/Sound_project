@@ -8,6 +8,8 @@ from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 from wtforms import SubmitField
 
+import sqlite3
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secretkey'
 Bootstrap(app)
@@ -25,20 +27,35 @@ char_freq = {
     '8': 5000,
     '9': 5500
 }
+balance = 1000  # starting balance
+
 
 class RecordForm(FlaskForm):
     record = SubmitField('Record')
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    global balance
     form = RecordForm()
     if form.validate_on_submit():
         return redirect(url_for('record'))
-    return render_template('index.html', form=form)
+
+    # Retrieve the last recovered value from the database
+    conn = sqlite3.connect('recovered_text.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM recovered_text ORDER BY id DESC LIMIT 1')
+    row = cursor.fetchone()
+    recovered_value = int(row[1]) if row else 0
+    conn.close()
+
+    # Subtract the recovered value from the balance
+    # balance -= recovered_value
+
+    return render_template('index.html', form=form, balance=balance)
 
 @app.route('/record')
 def record():
-    duration = 12
+    duration = 2
     fs = 44100
     n_samples = int(fs * duration)
     recording = sd.rec(int(duration * fs), samplerate=fs, channels=1)
@@ -48,8 +65,12 @@ def record():
 
     return redirect(url_for('playback'))
 
+
+
 @app.route('/playback')
 def playback():
+    global balance
+
     # Load the audio file
     fs, waveform = wavfile.read('output.wav')
 
@@ -85,7 +106,6 @@ def playback():
     print("Recovered text: ", recovered_text)
 
     # Store the recovered text in a database
-    import sqlite3
     conn = sqlite3.connect('recovered_text.db')
     cursor = conn.cursor()
     cursor.execute('''CREATE TABLE IF NOT EXISTS recovered_text
@@ -98,6 +118,10 @@ def playback():
     cursor.execute("INSERT INTO recovered_text (text) VALUES (?)", (int(rc),))
     conn.commit()   
     conn.close()
+    balance -= int(rc)
+
+
+
 
     def generate():
         with open("output.wav", "rb") as f:
@@ -109,5 +133,7 @@ def playback():
     return Response(generate(), mimetype="audio/x-wav")
 
 
+
 if __name__ == '__main__':
     app.run(debug=True)
+
